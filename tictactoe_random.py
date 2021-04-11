@@ -1,3 +1,6 @@
+#1 - Human
+#2 - Computer
+
 import time
 import random
 import pygame as pg
@@ -33,10 +36,16 @@ def draw_o(row, col):
     pg.draw.circle(screen, O_COLOR, (100 + 200 * row, 100 + 200 * col), 75, 15)
 
 def mark_square(row, col, player):
-    if player == 1:
-        draw_x(row, col)
-    elif player == 2:
-        draw_o(row, col)
+    if user_input == 1:
+        if player == 1:
+            draw_x(row, col)
+        elif player == 2:
+            draw_o(row, col)
+    elif user_input == 2:
+        if player == 1:
+            draw_o(row, col)
+        elif player == 2:
+            draw_x(row, col)
     board[row][col] = player
 
 def available(row, col):
@@ -68,14 +77,20 @@ def winner(player):
     if check == '':
         return False
     else:
-        draw_winline(check, num, player)
+        draw_winline(check, num, player, user_input)
         return True
 
-def draw_winline(check, num, player):
-    colors = {
-        1 : X_COLOR,
-        2 : O_COLOR
-    }
+def draw_winline(check, num, player, starting_player):
+    if starting_player == 1:
+        colors = {
+            1 : X_COLOR,
+            2 : O_COLOR
+        }
+    elif starting_player == 2:
+        colors = {
+            1 : O_COLOR,
+            2 : X_COLOR
+        }
     win_color = colors.get(player)
 
     if check == 'ver':
@@ -89,7 +104,18 @@ def draw_winline(check, num, player):
 
 #Main Body of Code
 board = reset_board()
-current_player = 1
+proper_selection = False
+while (not proper_selection):
+    user_input = input("Would you like to be X or O?").lower()
+    if user_input == 'x':
+        proper_selection = True
+        user_input = 1
+    elif user_input == 'o':
+        proper_selection = True
+        user_input = 2
+    else:
+        print("Please choose either X or O!")
+current_player = user_input
 
 running = True
 while(running):
@@ -123,15 +149,15 @@ while(running):
             if available(rand_row, rand_col):
                 mark_square(rand_row, rand_col, 2)
                 taken = False
-        current_player = 1
+    current_player = 1
 
     bool2 = winner(2)
 
     pg.display.flip()
     if bool1 or bool2 or filled():
-        time.sleep(3)
+        time.sleep(1.5)
         board = reset_board()
-        current_player = 1
+        current_player = user_input
 pg.quit()
 
 
