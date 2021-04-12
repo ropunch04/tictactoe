@@ -159,5 +159,3 @@ while(running):
         board = reset_board()
         current_player = user_input
 pg.quit()
-
-
